@@ -16,22 +16,25 @@ def register(request):
     return render(request,'register.html',{'form':form,'type':'Sign '})
 
 def userlogin(request):
-    if request.method=="POST":
-        form=AuthenticationForm(request,request.POST)
+    if request.method == "POST":
+        form = AuthenticationForm(request, request.POST)
         if form.is_valid():
-            user_name=form.cleaned_data['username']
-            user_pass=form.cleaned_data['password']
-            user=authenticate(username=user_name,password=user_pass)
+            user_name = form.cleaned_data['username']
+            user_pass = form.cleaned_data['password']
+            user = authenticate(username=user_name, password=user_pass)
             if user is not None:
                 login(request, user)
                 messages.success(request, 'Logged in successfully')
                 return redirect('profile')
             else:
-                messages.warning(request,'Login infortaion is Incorrect')
-                return redirect('register')
+                messages.warning(request, 'Login information is incorrect')
+                return redirect('userlogin')
+        else:
+            messages.error(request, 'Invalid login credentials')
+            return render(request, 'login.html', {'form': form, 'type': 'Login'})
     else:
-        form=AuthenticationForm()
-        return render(request,'login.html',{'form':form,'type':'Login'})  
+        form = AuthenticationForm()
+        return render(request, 'login.html', {'form': form, 'type': 'Login'})
     
 def profile(request):
     return render(request,'profile.html')
@@ -42,11 +45,11 @@ def profileUpdate(request):
         form=forms.changeuserdata (request.POST, instance=request.user)
         if form.is_valid():
             form.save()
-            messages.success(request,'profile Updated successfully')
+            messages.success(request,'Profile Updated successfully')
             return redirect('profile')
     else:
         form=forms.changeuserdata(instance=request.user)
-    return render(request,'update_profile.html',{'form':form,})
+    return render(request,'Update_profile.html',{'form':form,})
 
 def change_pass(request):
     if request.method == 'POST':
